@@ -43,24 +43,24 @@ object ControlStructuresHomework {
 
   def parseCommand(input: String): Either[ErrorMessage, Command] = {
     input.replaceAll("\\s{2,}", " ").trim.split(" ").toList match {
-      case list if list.length < 2 => Left(ErrorMessage("Not enough operands"))
-      case _ :: xs if xs.map(_.toDoubleOption).contains(None) => Left(ErrorMessage("Impossible to convert to numbers"))
+      case list if list.length < 2 => Left(ErrorMessage("Error: not enough operands for command"))
+      case _ :: xs if xs.map(_.toDoubleOption).contains(None) => Left(ErrorMessage("Error: impossible to convert to numbers"))
       case x :: xs if x == "divide" => xs match {
-        case twoOperands if twoOperands.length != 2 => Left(ErrorMessage("Division requires 2 operands"))
+        case twoOperands if twoOperands.length != 2 => Left(ErrorMessage("Error: division requires only two operands"))
         case _ => Right(Divide(xs.head.toDouble, xs.last.toDouble))
       }
       case x :: xs if x == "sum" => Right(Sum(xs.map(elem => elem.toDouble)))
       case x :: xs if x == "average" => Right(Average(xs.map(elem => elem.toDouble)))
       case x :: xs if x == "min" => Right(Min(xs.map(elem => elem.toDouble)))
       case x :: xs if x == "max" => Right(Max(xs.map(elem => elem.toDouble)))
-      case _ => Left(ErrorMessage("Unexpected error"))
+      case _ => Left(ErrorMessage("Error: unexpected error"))
     }
   }
 
   def calculate(command: Command): Either[ErrorMessage, Result] = {
     command match {
       case Divide(dividend, divisor) => (dividend, divisor) match {
-        case (_, 0) => Left(ErrorMessage("Division by zero"))
+        case (_, 0) => Left(ErrorMessage("Error: division by zero"))
         case _ => Right(DivideResult(dividend, divisor, dividend / divisor))
       }
       case Sum(numbers) =>
